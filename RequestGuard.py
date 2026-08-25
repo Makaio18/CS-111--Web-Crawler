@@ -1,16 +1,23 @@
+
 import requests
 
 """
 Class;
+
+    ____Libs____
+        requests: allows for interaction( requesting data, (html) from the  internet. )
 
     ____Attributes___:
         domain: name of inputed url domain
         forbidden:  lst of for pathways that should not be accessed on the current website. (respects scraping regulations)
 
     ____Methods___:
-        can_follow_link:
-        make_get_request:
-        parse_robots:
+        can_follow_link: checks if url's pathway is not in restricted pathways of pages robot.txt, and repsonsed accordingly 
+        make_get_request:  retives the acctual contents of the page, whether html or img based.
+        parse_robots: creates the actual restricited list of pathways the computer should not follow. 
+
+
+
 
 
 """
@@ -42,8 +49,7 @@ class RequestGuard:
                 return False
         return True 
             
-            
-
+        
     #Using full url to pull html,
     # use_stream varible that defines how the information should be 
     # pulled( whehter regular html or images)
@@ -54,8 +60,6 @@ class RequestGuard:
             return requests.get(url, stream= use_stream)
         else:
             return None
-
-
 
     #__________retriving the robot.txt file------> list of fobbiden actions/ pathways
     #that should not be preformed on the website. 
@@ -110,7 +114,8 @@ class RequestGuard:
                 excluded_paths.append(path)
             else:
                 pass
-            
+
+        #final list of exliuded pathways not to visit is returned. 
         return excluded_paths
 
 

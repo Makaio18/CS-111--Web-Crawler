@@ -104,7 +104,6 @@ def plot_data(url, plot_png, output_file):
             writer.writerow(row)
 
     
-    
 
 
 def fix_links(current_href, parentDomain):
@@ -122,15 +121,11 @@ def fix_links(current_href, parentDomain):
         return combineLinks.combine_paths(domain, current_href) 
 
     elif current_href.startswith("#"): 
-        
         return parentDomain
 
     else: 
         return combineLinks.combine_urls(parentDomain, current_href) 
         
-
-
-
 
 
 #_______________________-Counting the links on the page_______
@@ -173,7 +168,6 @@ def count_links(inputURL, output1, output2):
 
     print(timesAppeared)
 
-
     BINSIZE = []
     VAlUES = timesAppeared.values()
     max_range = max(timesAppeared.values()) + 1
@@ -181,7 +175,6 @@ def count_links(inputURL, output1, output2):
 
     for i in range(1, max_range + 1):
         BINSIZE.append(i)
-
 
     NEWVALUES, NEWBINS, temp = plt.hist(VAlUES,BINSIZE)
     plt.savefig(output1)
