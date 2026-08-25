@@ -44,7 +44,10 @@ class RequestGuard:
             
             
 
-    #Using
+    #Using full url to pull html,
+    # use_stream varible that defines how the information should be 
+    # pulled( whehter regular html or images)
+    #utulizing attribute of requests get() method. 
     def make_get_request(self, url, use_stream= False): 
 
         if (self.can_follow_link(url)):
@@ -53,22 +56,61 @@ class RequestGuard:
             return None
 
 
-    
+
+    #__________retriving the robot.txt file------> list of fobbiden actions/ pathways
+    #that should not be preformed on the website. 
     def parse_robots(self):
 
+        # retrives data from website, saves as obj
         response = requests.get(f"https://{self.domain}/robots.txt")
+
+        #saves text version from responsed object
         lines = response.text.splitlines()
 
-        excluded_paths = []  # Initialize list to store paths
 
+        #creates list object to save paths that should be exluded. 
+        # To use a refrence for what not to crawel down. 
+        excluded_paths = []  
+
+
+        """
+        Common example of Robot.txt file
+        
+        # Allow all crawlers access to the entire site
+
+            User-agent: *
+            Disallow:
+
+            # Block a specific private folder for all bots
+            User-agent: *
+            Disallow: /private-admin/
+
+            # Block a specific AI scraper bot completely
+            User-agent: GPTBot
+            Disallow: /
+
+            # Point to the XML sitemap
+            Sitemap: https://example.com     
+        """
+
+
+        #loops over line varible that stores text of exluded paths for website.
         for line in lines:
+
+            #identifies specific persmissions that are not allowed. 
             if line.startswith("Disallow:"):
-            
+
+                #collects parts after permission statement
                 parts = line.split(':', 1)
+
+                #collects folder/file name that is part of restircted pathway. 
                 path = parts[1].strip()
+
+                #addeds restricited content no to access to list. 
                 excluded_paths.append(path)
             else:
                 pass
+            
         return excluded_paths
 
 
