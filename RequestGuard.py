@@ -1,11 +1,31 @@
 import requests
 
+"""
+Class;
+
+    ____Attributes___:
+        domain: name of domain
+        forbidden:
+
+    ____Methods___:
+        can_follow_link:
+        make_get_request:
+        parse_robots:
+
+
+
+
+
+
+
+"""
 class RequestGuard:
 
-
+    #________Instantiates protocals for webcrawler object to abide while recursing through web. 
     def __init__(self, url):
-    
+        #splits/ saves domain to variable
         domain = url.split("//")[1].split("/")[0] 
+        
 
         self.domain = domain
         self.forbidden = self.parse_robots()
@@ -16,7 +36,7 @@ class RequestGuard:
         if not url.startswith(f"https://{self.domain}"):
             return False
         
-        path = url.split(f"https://{self.domain}", 1)[1]
+        path = url.split(f"https://{self.domain}", 1) [1]
 
         for forbidden_path in self.forbidden:
             if path.startswith(forbidden_path):

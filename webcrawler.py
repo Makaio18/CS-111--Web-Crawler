@@ -1,17 +1,27 @@
-import requests
-from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
-import sys
-import RequestGuard
+from bs4 import BeautifulSoup
 import lab20 as combineLinks
-import csv
 import image_proccessing
+import RequestGuard
+import requests
+import sys
+import csv
+
+
+"""
+
+# -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv
+# -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g
+clea# -c <url> <output filename 1> <output filename 2>
 
 
 
+"""
 
 
+# ______ 
 def modify_img(url, file_name, flag):
+    
     response = requests.get(url)
     soup = BeautifulSoup(response.text, features="html.parser")
     imgLst = []
@@ -38,8 +48,7 @@ def modify_img(url, file_name, flag):
         image_proccessing.applyfilter(name, flag)
         
 
-        
-        #
+    
 
 
 def plot_data(url, plot_png, output_file):
@@ -98,30 +107,37 @@ def plot_data(url, plot_png, output_file):
     
 
 
-def fix_links(current_href, parentDomain): ## cheks whether passed url is constrcuted properly.
+def fix_links(current_href, parentDomain):
 
     domain = combineLinks.get_domain(parentDomain)
 
-    if current_href.startswith("https") or current_href.startswith("http"):  ### FULL URLS WITH POUNDS
+    if current_href.startswith("https") or current_href.startswith("http"):  
 
         if "#" in current_href:
             return current_href.split("#")[0] 
         else:
             return current_href 
     
-    elif current_href.startswith("/"):  ### Relative links
+    elif current_href.startswith("/"):  
         return combineLinks.combine_paths(domain, current_href) 
 
-    elif current_href.startswith("#"): ###### # Fragment
+    elif current_href.startswith("#"): 
         
         return parentDomain
 
-    else: ## Relative page
+    else: 
         return combineLinks.combine_urls(parentDomain, current_href) 
         
 
 
 
+
+
+#_______________________-Counting the links on the page_______
+"""
+Abiding by the 
+
+"""
 def count_links(inputURL, output1, output2):
 
     linkstoVist = []
@@ -131,7 +147,7 @@ def count_links(inputURL, output1, output2):
 
     
     while linkstoVist:
-
+        
         currentLink = linkstoVist.pop()
 
         if currentLink in timesAppeared: ### check if I've visited link
@@ -177,15 +193,20 @@ def count_links(inputURL, output1, output2):
 
 
 
-
+#_______saves sys args and flags to vars, 
 def main(argv):
 
+    # action (which function) being performed
     flag = argv[1]
+    #where the action will be preformed
     url = argv[2]
+    #Resource one (etc. img, data, infomation)
     elem1 = argv[3]
+    #Resource two (either more data, img,) or futher detail pretain to action being done on resource one
     elem2 = argv[4]
 
 
+    #calling of corresponding function to validated sys calls
     if flag == "-c":
         count_links(url, elem1, elem2)
 
@@ -194,48 +215,43 @@ def main(argv):
 
     elif flag == "-i":
         modify_img(url, elem1, elem2)
-        pass
-        #argv[3] == "-s" or "-g" or "-f" or "-m"
+    
+       
 
-
+#________defensive coding that validates sys flags and arguments. 
 def test_flags(argv):
-    # -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv
-    # -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g
-    # -c <url> <output filename 1> <output filename 2>
 
     if len(argv) > 3:
-
         flag = argv[1]
         second_flag = argv[4]
         
-        if flag == "-c":   #COUNTING LINKS
+        if flag == "-c":   
             return True
         
-        elif flag == "-p":  #PLOT AND EXTRACT DATA
+        elif flag == "-p":  
             return True
-        
-        elif flag == "-i":  #FIND AND MANIPULATE IMAGE
-            if second_flag == "-s" or second_flag == "-m" or second_flag == "-g" or second_flag == "-f":
-                return True
     
-        
+        elif flag == "-i":  
+            if second_flag in ("-s", "-m", "-g", "-f"):
+                return True
     return False
     
 
+
+
 if __name__ == "__main__":
-   
+
+    """
+    -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv"
+    -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g"
+    -c <url> <output filename 1> <output filename 2>")
+
+    """
     if test_flags(sys.argv):
         main(sys.argv)
     else:
-        print("Invalid arguments")
+        print("\nInvalid arguments")
 
-    # v = ["webCraweler", "-i"," http://cs111.byu.edu/Projects/project04/assets/images.html","grey_", "-f"]
-   
-    # print(len(v))
-    # if test_flags(v):
-    #     main(v)
-    # else:
-    #     print("Invalid arguments")
 
 
 
