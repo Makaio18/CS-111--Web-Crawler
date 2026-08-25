@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import lab20 as combineLinks
-import image_proccessing
+import image_processing
 import RequestGuard
 import requests
 import sys
@@ -45,7 +45,7 @@ def modify_img(url, file_name, flag):
         with open(name, 'wb') as imgUrl:
             imgUrl.write(response.content)
 
-        image_proccessing.applyfilter(name, flag)
+        image_processing.apply_filter(name, flag)
         
 
     
@@ -244,7 +244,6 @@ if __name__ == "__main__":
         main(sys.argv)
     else:
         print("\nInvalid arguments")
-
 
 
 
