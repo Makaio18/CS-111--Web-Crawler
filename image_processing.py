@@ -14,7 +14,6 @@ functions______:
     apply_filter
 """
 
-
 ##Turns an image gray by changing the pixels of RGB to the avvergae of their sum
 
 def grayscale(filename):
@@ -146,7 +145,8 @@ def mirror(filename):
 
 
 #"-s" or "-g" or "-f" or "-m"
-# sequencing of the program, chaning the flow of logic based of flag given in parameters. 
+# sequencing of the program, chaning the flow of logic based of flag given in parameters.
+# validationn of flag is done before calls of fucntions( so validation is not needed here)
 def apply_filter(filename, flag):
 
     if flag == "-s":

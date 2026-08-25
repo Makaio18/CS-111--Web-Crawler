@@ -9,13 +9,20 @@ import csv
 
 
 """
+======LIBS=================
 
+
+====Functions===============
+
+
+
+
+
+
+===========SAMPLE INIPUT
 # -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv
 # -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g
-clea# -c <url> <output filename 1> <output filename 2>
-
-
-
+# -c <url> <output filename 1> <output filename 2>
 """
 
 
@@ -50,16 +57,14 @@ def modify_img(url, file_name, flag):
 
     
 
-
 def plot_data(url, plot_png, output_file):
 
     response = requests.get(url)
-    if response.status_code != 200:
+    if (response.status_code != 200) :
         print("Page doesn't exist")
         return
 
     soup = BeautifulSoup(response.text, 'html.parser')
-
 
     table = soup.find('table', id='CS111-Project4b')
     if not table:
@@ -68,9 +73,9 @@ def plot_data(url, plot_png, output_file):
     x_values = []
     y_values = []
 
-    for row in table.find_all('tr'):
+    for row in table.find_all('tr') :
         cells = row.find_all('td')
-        if len(cells) < 1:
+        if (len(cells) < 1) :
             continue
         
         try:
@@ -78,18 +83,22 @@ def plot_data(url, plot_png, output_file):
             x_values.append(x)
 
             
-            if not y_values:
+            if (not y_values) :
                 y_values = [[] for _ in range(len(cells) - 1)]
 
-            for i in range(1, len(cells)):
+            for i in range(1, len(cells)) :
                 y = float(cells[i].text)
                 y_values[i-1].append(y)
+
+
         except ValueError:
             print("Could not convert data to float, skipping row.")
             continue
 
    
     colors = ['blue', 'green', 'red', 'black']
+
+
     for i, y in enumerate(y_values):
         plt.plot(x_values, y, color=colors[i % len(colors)], label=f'Dataset {i+1}')
 
@@ -110,17 +119,17 @@ def fix_links(current_href, parentDomain):
 
     domain = combineLinks.get_domain(parentDomain)
 
-    if current_href.startswith("https") or current_href.startswith("http"):  
+    if (current_href.startswith("https") or current_href.startswith("http")) :  
 
-        if "#" in current_href:
+        if ("#" in current_href) :
             return current_href.split("#")[0] 
         else:
             return current_href 
     
-    elif current_href.startswith("/"):  
+    elif (current_href.startswith("/")) :  
         return combineLinks.combine_paths(domain, current_href) 
 
-    elif current_href.startswith("#"): 
+    elif (current_href.startswith("#")) : 
         return parentDomain
 
     else: 
@@ -145,13 +154,13 @@ def count_links(inputURL, output1, output2):
         
         currentLink = linkstoVist.pop()
 
-        if currentLink in timesAppeared: ### check if I've visited link
+        if (currentLink in timesAppeared) : ### check if I've visited link
             timesAppeared[currentLink] += 1
             continue
         
         timesAppeared[currentLink] = 1
 
-        if guard.can_follow_link(currentLink):
+        if (guard.can_follow_link(currentLink)) :
             print(currentLink)
 
             response = requests.get(currentLink)
@@ -161,6 +170,7 @@ def count_links(inputURL, output1, output2):
 
                 href = tag.get("href") ### The links on a page
                 fixedLink = fix_links(href, currentLink ) ### Fixes the url if not complete
+
                 print(fixedLink)
                 linkstoVist.append(fixedLink)
 
@@ -200,13 +210,13 @@ def main(argv):
 
 
     #calling of corresponding function to validated sys calls
-    if flag == "-c":
+    if (flag == "-c") :
         count_links(url, elem1, elem2)
 
-    elif flag == "-p":
+    elif (flag == "-p") :
         plot_data(url, elem1, elem2)
 
-    elif flag == "-i":
+    elif (flag == "-i") :
         modify_img(url, elem1, elem2)
     
        
@@ -218,13 +228,13 @@ def test_flags(argv):
         flag = argv[1]
         second_flag = argv[4]
         
-        if flag == "-c":   
+        if (flag == "-c") :   
             return True
         
-        elif flag == "-p":  
+        elif (flag == "-p") :  
             return True
     
-        elif flag == "-i":  
+        elif (flag == "-i") :  
             if second_flag in ("-s", "-m", "-g", "-f"):
                 return True
     return False
@@ -240,7 +250,7 @@ if __name__ == "__main__":
     -c <url> <output filename 1> <output filename 2>")
 
     """
-    if test_flags(sys.argv):
+    if (test_flags(sys.argv)) :
         main(sys.argv)
     else:
         print("\nInvalid arguments")

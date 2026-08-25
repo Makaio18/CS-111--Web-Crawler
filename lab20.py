@@ -36,13 +36,11 @@ def get_domain(url):
     # for future comparsions to adjust in sqequecing, if this case not met
     return ""
 
-
 # Takes, current domain, and creates link with desired path. 
 #  ( creating a valid link with agreed upon domian, but differing paths)
 def combine_paths(url, path):
   URL = urllib.parse.urljoin(url, path) 
   return  URL
-
 
 
 # just combines urls in general----- scnenario basesd, if a url is just missing the domain( 
