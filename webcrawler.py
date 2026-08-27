@@ -10,13 +10,24 @@ import csv
 
 """
 ======LIBS=================
+    matplotlib
+    beautifulsoup
+    requests
+    sys
+    csv
 
+=====Modules======
+    lab20
+    image_processing
+    RequestGuard
 
 ====Functions===============
-
-
-
-
+    modify()
+    plot_data()
+    fix_links()
+    count_links()
+    main()
+    test_flags()
 
 
 ===========SAMPLE INIPUT
@@ -25,33 +36,59 @@ import csv
 # -c <url> <output filename 1> <output filename 2>
 """
 
-
-# ______ 
+# ________________
 def modify_img(url, file_name, flag):
-    
+
+    #calls the  contents of the URL saves it as a response object.
     response = requests.get(url)
+
+    #Beautiful soup, pulls data out of html, using preferred parser( by creating its own cutsom tree object) mimics dom object
+    #stores tree object( Herirchal relationship)
     soup = BeautifulSoup(response.text, features="html.parser")
+
+    #empty list, that will store all future images of a particular 
     imgLst = []
 
 
+    #method that finds that locates all img nodes within the tree brancg and, then identifies, whether if the resource for the imge is 
+    #interanlly stored or externally, if stored locally, then retirive img, create a full URL of the img refrence, and then add 
+    #completed url to list of imgs. 
+    #SRC is to download,
+    #href acts like a pointer. 
     for img in soup.find_all("img"):
+        #finds the embeded and downloaded reosurces, ones that are not pointed in another direction.
         src = img.get("src")
         if src:
             content = fix_links(src, url)
             imgLst.append(content)
 
     
+    """
+    loops over all img in list, splits off params, 
+    creates a new varible name---- which is a string containing a file-path
+    
+    """
     for imgUrl in imgLst:
-        
-
+        #splits imge url parts up. 
         split = imgUrl.split("/")
+
+        #Takes website, and adds the final parameter of the image url, 
+        # stores, name of affect, last segment in full url as shorten file_name
         name = file_name + split[len(split) - 1]
 
+        #calls the image resource it self, using full url then stores it to the repsonse object
         response = requests.get(imgUrl)
 
+        #opens a new file, where the name of file is "name" and the contents are the acutual contents saved from the 
+        #response object contents()
+        # the request can only call, saving it to a varible that has arrtibutes regarding not the address rather the data itself
+        #allows us to write saved data to new file. 
         with open(name, 'wb') as imgUrl:
             imgUrl.write(response.content)
 
+
+
+        #using new resource saved, we apply the filter using imported module, and adjust sequencing using flag. 
         image_processing.apply_filter(name, flag)
         
 
@@ -125,12 +162,18 @@ def fix_links(current_href, parentDomain):
             return current_href.split("#")[0] 
         else:
             return current_href 
+
+
     
     elif (current_href.startswith("/")) :  
         return combineLinks.combine_paths(domain, current_href) 
 
+
+
     elif (current_href.startswith("#")) : 
         return parentDomain
+
+
 
     else: 
         return combineLinks.combine_urls(parentDomain, current_href) 
@@ -202,20 +245,23 @@ def main(argv):
     # action (which function) being performed
     flag = argv[1]
     #where the action will be preformed
+
+
     url = argv[2]
     #Resource one (etc. img, data, infomation)
     elem1 = argv[3]
     #Resource two (either more data, img,) or futher detail pretain to action being done on resource one
     elem2 = argv[4]
 
-
-    #calling of corresponding function to validated sys calls
+    # -c <url> <output filename 1> <output filename 2>")
     if (flag == "-c") :
         count_links(url, elem1, elem2)
 
+    # -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv"
     elif (flag == "-p") :
         plot_data(url, elem1, elem2)
-
+    
+   # -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g"
     elif (flag == "-i") :
         modify_img(url, elem1, elem2)
     
@@ -243,7 +289,6 @@ def test_flags(argv):
 
 
 if __name__ == "__main__":
-
     """
     -p http://cs111.byu.edu/Projects/project04/assets/data.html data.png data.csv"
     -i http://cs111.byu.edu/Projects/project04/assets/images.html grey_ -g"
